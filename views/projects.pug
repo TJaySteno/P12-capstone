@@ -1,0 +1,33 @@
+extends about
+
+block projects
+  .row.border-top.border-secondary.mx-4.py-4
+    .border-right.border-secondary.col-3.m-0.pl-0
+      #projects-tab.nav.flex-column.nav-pills(role="tablist" aria-orientation="vertical")
+        each project in projects
+          - const { id } = project;
+          - let className = 'nav-link';
+          - if (id === 1) className += ' active';
+          - const rootName = `project-${id}`;
+          - const idName = `${rootName}-tab`;
+          - const path = `#${rootName}`;
+          - const selected = (id === 1) ? 'true' : 'false';
+          a(id=idName class=className href=path data-toggle="pill" role="tab" aria-controls=rootName aria-selected=selected)= `Project ${id}`
+    .col-9
+      #projects-tabContent.tab-content
+        each project in projects
+          - const { id, title, description, skills, url } = project;
+          - let className = 'tab-pane px-2';
+          - if (id === 1) className += ' show active';
+          - const idName = `project-${id}`;
+          - const labelledby = `${idName}-tab`;
+          div(class=className id=idName role="tabpanel" aria-labelledby=labelledby)
+            h4
+              u
+                a.font-italic(href=url)= title
+            p.text-justify.my-3= description
+            each skill in skills
+              span.badge.badge-pill.badge-primary= skill
+          
+          
+          
