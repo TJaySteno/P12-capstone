@@ -1,0 +1,44 @@
+extends layout
+
+block content
+  .mx-auto.p-3.alert-info.border.border-info.rounded.shadow.clearfix
+    div
+      .w-50.border.border-dark.float-left(style='height:400px;')
+        p map
+      //- MapContent#map(coord=coord)
+      .review-container.mx-auto.pl-3
+        form.form-inline.mb-2.mx-auto.px-2.px-md-4
+          input#zip.form-control(type='text' placeholder='Address' data-toggle='popover' data-placement='bottom' data-content='hey')
+          input.btn.btn-info.mx-1(type='submit' value='Search')
+          .btn-group
+            button.btn.btn-info(type='button') ISS Now
+            button.btn.btn-info.dropdown-toggle.dropdown-toggle-split(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+            .dropdown-menu
+              h6.dropdown-header Choose a time
+              a.dropdown-item(href='#') 3pm
+              a.dropdown-item(href='#') 2pm
+              a.dropdown-item(href='#') 1pm
+        .rounded.border.border-dark.bg-info.text-dark.text-left.w-100.p-3
+          ul#weather-tab.nav.nav-tabs.mx-2(role='tablist')
+            li.nav-item
+              a#current-weather-tab.nav-link.alert-info.active(data-toggle='pill' href='#current-weather' role='tab' aria-controls='current-weather' aria-selected='true') Current
+            li.nav-item
+              a#weather-forecast-tab.nav-link.alert-info(data-toggle='pill' href='#weather-forecast' role='tab' aria-controls='weather-forecast' aria-selected='false') Forecast
+            .btn-group.btn-group-toggle.ml-auto(data-toggle="buttons")
+              label.btn.btn-secondary.active F&deg;
+                input#imperial(type="radio" name="imperial" autocomplete="off" checked)
+              label.btn.btn-secondary C&deg;
+                input#metric(type="radio" name="metric" autocomplete="off")
+          #weather-tabContent.tab-content.bg-white.rounded
+            #current-weather.tab-pane.fade.show.active.px-3.py-1(role='tabpanel' aria-labelledby='current-weather-tab')
+              p.lead.text-center.text-capitalize.mb-1 weatherDescription
+                img(src='http://openweathermap.org/img/w/04d.png' alt='This thing')
+              p.font-weight-bold {tempNow} ({high} high, {low} low) with {main.humidity}% humidity
+              p Winds blowing at {windSpeed}, {windDir}
+              p Cloud cover is at {clouds.all}%
+            #weather-forecast.tab-pane.fade(role='tabpanel' aria-labelledby='weather-forecast-tab')
+              ul.forecast-content.list-group.list-group-flush.rounded
+                li.list-group-item {time}: {tempNow}, {main.humidity}% humidity, {weatherDesc}
+                li.list-group-item {time}: {tempNow}, {main.humidity}% humidity, {weatherDesc}
+                li.list-group-item {time}: {tempNow}, {main.humidity}% humidity, {weatherDesc}
+                li.list-group-item {time}: {tempNow}, {main.humidity}% humidity, {weatherDesc}

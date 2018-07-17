@@ -3,8 +3,9 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const mongoose = require('mongoose');
 
-const indexRouter = require('./routes/index');
+const router = require('./routes/router');
 
 const app = express();
 
@@ -18,12 +19,20 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(indexRouter);
+app.use((req, res, next) => {
+  mongoose.connect('mongodb://localhost:27017/iss-weather', { useNewUrlParser: true });
+  const db = mongoose.connection;
+  db.on('error', console.error.bind(console, 'connection error:'));
+  db.once('open', () => {
+    console.log('MONGODB connection open');
+    next();
+  });
+});
+
+app.use(router);
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
-});
+app.use((req, res, next) => next(createError(404)));
 
 // error handler
 app.use((err, req, res, next) => {
@@ -33,7 +42,12 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  const options = {
+    active: [false,true,false],
+    err
+  };
+  console.log(res.locals);
+  res.render('error', options);
 });
 
 module.exports = app;

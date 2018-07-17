@@ -5,10 +5,11 @@ header.bg-info.my-4.rounded.border.border-dark.shadow-lg
       span.navbar-toggler-icon
     .collapse.navbar-collapse#navbarSupportedContent
       ul.navbar-nav.mr-auto
-        li.nav-item.active
-          a.nav-link(href="/") Home
+        - const className = num => active[num] ? 'nav-link active' : 'nav-link';
+        li.nav-item
+          a(class=className(0) href="/") Home
         li.nav-item.border-left
-          a.nav-link(href="/maps") Maps
+          a(class=className(1) href="/maps") Maps
         li.nav-item.border-left
-          a.nav-link(href="/about") About Me
+          a(class=className(2) href="/about") About Me
     a.navbar-brand.font-italic(href="https://github.com/TJaySteno" target="_blank") by Trent Stenoien
