@@ -1,0 +1,28 @@
+#add-landmark.modal.fade(tabindex="-1" role="dialog" aria-labelledby="add-landmark-title" aria-hidden="true")
+  .modal-dialog.modal-dialog-centered(role="document")
+    .modal-content
+      .modal-header.bg-info
+        h5#add-landmark-title.modal-title Add a Landmark
+        button.close(type="button" data-dismiss="modal" aria-label="Close")
+          span(aria-hidden="true") &times;
+      .modal-body
+        #add-landmark-search.show.input-group
+          input.form-control(type="text" placeholder="Landmark name or address" value="Eiffel Tower" aria-label="Landmark input" aria-describedby="add-landmark-search-btn")
+          .input-group-append
+            button#add-landmark-search-btn.btn.btn-info(type="button") Search
+        #add-landmark-results.hide.d-none
+          ul.list-group
+            - // This will be based on results returned from Google
+            li.list-group-item.list-group-item-action
+              p Big Ben
+                span.d-none 123 321
+        #add-landmark-format.hide.d-none
+          form.mb-1
+            .input-group
+              input.form-control(type="text" name="name" placeholder="Name your landmark" aria-label="Landmark name" aria-describedby="landmark-name")
+              .input-group-append
+                button.btn.btn-info(type="submit") Save
+          p 123 Mulberry Ln
+          p#coord.d-none 123 321
+        p#add-landmark-error.d-none error
+          

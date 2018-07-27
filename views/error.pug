@@ -5,6 +5,6 @@ block content
     h2.border-bottom.border-warning An anomoly was detected
     .clearfix
       .float-left.text-center.w-75
-        h5= `${err.status} ${err.message}`
-        p (Possible alien interference)
+        h5 (Alien interference suspected)
+        p (#{err.status}): #{err.message}
       img.error-img.rounded.shadow.border.border-warning.float-right.w-25(src="/img/HomerAlienFishing.jpg" alt="Homer Being Abducted")

@@ -1,0 +1,19 @@
+#remove-landmark.modal.fade(tabindex="-1" role="dialog" aria-labelledby="remove-landmark-title" aria-hidden="true")
+  .modal-dialog.modal-dialog-centered(role="document")
+    .modal-content.pb-3
+      .modal-header.bg-info
+        h5#remove-landmark-title.modal-title Remove a Landmark
+        button.close(type="button" data-dismiss="modal" aria-label="Close")
+          span(aria-hidden="true") &times;
+      .modal-body
+        #remove-landmark-list.show
+          ul.list-group
+            each lm in landmarks
+              li.list-group-item.list-group-item-action= lm.name
+                span.d-none= `$%${lm._id}`
+        #remove-landmark-confirm.hide.d-none.mb-2
+          hr
+          p Remove 
+            span#remove-landmark-title landmark?
+          button#remove-landmark-button.btn.btn-info(type="button") Delete
+        span#remove-landmark-error.d-none error

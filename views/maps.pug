@@ -3,42 +3,53 @@ extends layout
 block content
   .mx-auto.p-3.alert-info.border.border-info.rounded.shadow.clearfix
     div
-      .w-50.border.border-dark.float-left(style='height:400px;')
-        p map
-      //- MapContent#map(coord=coord)
-      .review-container.mx-auto.pl-3
-        form.form-inline.mb-2.mx-auto.px-2.px-md-4
-          input#zip.form-control(type='text' placeholder='Address' data-toggle='popover' data-placement='bottom' data-content='hey')
+      #map.map-container.d-inline-block(value=mapCoord)
+      .weather-container.d-inline-block
+        form#address-form.form-inline.mb-2.mx-auto.px-2.px-md-4
+          input#zip.form-control(type='text' placeholder='Address' value='Eiffel Tower' data-toggle='popover' data-placement='bottom' data-content='hey')
           input.btn.btn-info.mx-1(type='submit' value='Search')
           .btn-group
             button.btn.btn-info(type='button') ISS Now
             button.btn.btn-info.dropdown-toggle.dropdown-toggle-split(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
-            .dropdown-menu
-              h6.dropdown-header Choose a time
-              a.dropdown-item(href='#') 3pm
-              a.dropdown-item(href='#') 2pm
-              a.dropdown-item(href='#') 1pm
+            .dropdown-menu.dropdown-menu-right
+              h6.dropdown-header ISS Future
+              button.dropdown-item(type="button" data-toggle="modal" data-target="#passtimesModal") Next 5 passes here
+              .dropdown-divider
+              h6.dropdown-header Choose a landmark
+              button.dropdown-item(type="button" data-toggle="modal" data-target="#add-landmark") Add one
+              button.dropdown-item(type="button" data-toggle="modal" data-target="#remove-landmark") Remove one
+              .dropdown-divider
+              #landmark-buttons
+                each lm in landmarks
+                  button.dropdown-item(type="button")= lm.name
+                    span.d-none= `${lm.coord.lat} ${lm.coord.lng} ${lm._id}`
         .rounded.border.border-dark.bg-info.text-dark.text-left.w-100.p-3
+          h4.text-center Local Weather
           ul#weather-tab.nav.nav-tabs.mx-2(role='tablist')
             li.nav-item
               a#current-weather-tab.nav-link.alert-info.active(data-toggle='pill' href='#current-weather' role='tab' aria-controls='current-weather' aria-selected='true') Current
             li.nav-item
               a#weather-forecast-tab.nav-link.alert-info(data-toggle='pill' href='#weather-forecast' role='tab' aria-controls='weather-forecast' aria-selected='false') Forecast
             .btn-group.btn-group-toggle.ml-auto(data-toggle="buttons")
-              label.btn.btn-secondary.active F&deg;
-                input#imperial(type="radio" name="imperial" autocomplete="off" checked)
-              label.btn.btn-secondary C&deg;
-                input#metric(type="radio" name="metric" autocomplete="off")
-          #weather-tabContent.tab-content.bg-white.rounded
-            #current-weather.tab-pane.fade.show.active.px-3.py-1(role='tabpanel' aria-labelledby='current-weather-tab')
-              p.lead.text-center.text-capitalize.mb-1 weatherDescription
-                img(src='http://openweathermap.org/img/w/04d.png' alt='This thing')
-              p.font-weight-bold {tempNow} ({high} high, {low} low) with {main.humidity}% humidity
-              p Winds blowing at {windSpeed}, {windDir}
-              p Cloud cover is at {clouds.all}%
+              label(class=classTemp.f) F&deg;
+                input(type="radio" name="imperial" autocomplete="off")
+              label(class=classTemp.c) C&deg;
+                input(type="radio" name="metric" autocomplete="off")
+          #weather-tab-content.tab-content.bg-white.rounded
+            #current-weather.tab-pane.fade.show.active.px-3.py-2(role='tabpanel' aria-labelledby='current-weather-tab')
+              p.lead.text-center.text-capitalize.mb-1= current.description
+                img(src=current.imgSrc alt=current.description + ' icon')
+              p.font-weight-bold !{current.tempText}
+              p= current.windText
+              p= current.cloudText
             #weather-forecast.tab-pane.fade(role='tabpanel' aria-labelledby='weather-forecast-tab')
-              ul.forecast-content.list-group.list-group-flush.rounded
-                li.list-group-item {time}: {tempNow}, {main.humidity}% humidity, {weatherDesc}
-                li.list-group-item {time}: {tempNow}, {main.humidity}% humidity, {weatherDesc}
-                li.list-group-item {time}: {tempNow}, {main.humidity}% humidity, {weatherDesc}
-                li.list-group-item {time}: {tempNow}, {main.humidity}% humidity, {weatherDesc}
+              ul#forecast-content.list-group.list-group-flush.rounded
+                each item in forecast
+                  li.list-group-item
+                    .d-inline-block.alert-info.rounded.p-0
+                      img(src=item.imgSrc alt=item.imgAlt + ' icon')
+                    .d-inline-block
+                      span !{item.text}
+  include includes/passtimeModal
+  include includes/addLandmarkModal
+  include includes/removeLandmarkModal

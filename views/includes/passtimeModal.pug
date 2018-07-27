@@ -1,0 +1,13 @@
+#passtimesModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="passtimesModalTitle" aria-hidden="true")
+  .modal-dialog.modal-dialog-centered(role="document")
+    .modal-content
+      .modal-header.bg-info
+        h5#passtimesModalTitle.modal-title Future Pass Times
+        button.close(type="button" data-dismiss="modal" aria-label="Close")
+          span(aria-hidden="true") &times;
+      .modal-body
+        ul.list-group
+          each pass in passtimes
+            - const date = new Date(pass.risetime * 1000);
+            - const minutes = (pass.duration / 60).toFixed(2);
+            li.list-group-item #{date} for roughly #{minutes} minutes

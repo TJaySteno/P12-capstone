@@ -7,6 +7,8 @@ const mongoose = require('mongoose');
 
 const router = require('./routes/router');
 
+require('dotenv').config();
+
 const app = express();
 
 // view engine setup
@@ -42,11 +44,10 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500);
-  const options = {
-    active: [false,true,false],
-    err
-  };
-  console.log(res.locals);
+  const options = { err, active: [false,false,false] };
+
+  console.error(err);
+
   res.render('error', options);
 });
 
