@@ -7,7 +7,7 @@ const getGeocode = query => {
     try {
       const response = await $.ajax({
         type: 'POST',
-        url: '/geocode',
+        url: '/api/geocode',
         data: { query },
         dataType: 'json',
       });
@@ -16,6 +16,76 @@ const getGeocode = query => {
       reject(e);
     }
   });
+}
+
+const repositionMap = coord => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      console.log('repositionMap');
+      const { lat, lng } = coord;
+      const isMetric = window.location.pathname.includes('/metric');
+      const scale = isMetric ? 'metric' : 'imperial';
+
+      const response = await $.ajax({
+        type: 'POST',
+        url: '/api/reposition',
+        data: { lat, lng, scale },
+        dataType: 'json',
+      });
+
+      writeWeather(response.weather);
+      writePasstimes(response.passtimes);
+
+      map.setCenter(coord);
+      map.setZoom(13);
+      marker.setPosition(coord);
+
+    } catch (e) {
+      console.error(e);
+      reject(e);
+    }
+  });
+}
+
+// Write new values for current and forecasted weather
+const writeWeather = weather => {
+  const { current, forecast } = weather;
+
+  const titleHTML = current.description +
+    `<img src=${current.imgSrc} alt="${current.description} icon">`;
+
+  let forecastHTML = '';
+  forecast.forEach(item => {
+    forecastHTML += (
+      '<li class="forecast-li list-group-item">' +
+        '<div class="d-inline-block alert-info rounded p-0">' +
+          `<img src=${item.imgSrc} alt="${item.imgAlt} icon">` +
+        '</div>' +
+        '<div class="d-inline-block">' +
+          `<span>${item.text}</span>` +
+        '</div>' +
+      '</li>'
+    );
+  });
+
+  $('#current-weather')
+    .find('.lead').html(titleHTML)
+    .next().html(current.tempText)
+    .next().text(current.windText)
+    .next().text(current.cloudText);
+
+  $('#weather-forecast ul').html(forecastHTML);
+
+}
+
+// Write new values for Pass Times modal
+const writePasstimes = passtimes => {
+  let passtimeHTML = '';
+
+  passtimes.forEach(pass =>
+    passtimeHTML += `<li class="list-group-item">${pass.time} ${pass.duration}</li>`);
+
+  $('#passtimesModal').find('ul').html(passtimeHTML)
 }
 
 /********************* THE MAP *********************/
@@ -33,17 +103,13 @@ function initMap () {
   marker = new google.maps.Marker({ position: center, map });
 }
 
-function recenterMap (center) {
-  map.setCenter(center);
-  marker.setPosition(center);
-}
-
 /********************* WEATHER DIV *********************/
 
 // Accept address form submissions and find the query in Google Maps
 $('#address-form').submit(async e => {
   try {
     e.preventDefault();
+
     const $input = $(e.target).find('#zip');
     const query = $input.val();
     $input.val('');
@@ -51,7 +117,8 @@ $('#address-form').submit(async e => {
     const results = await getGeocode(query);
 
     const coord = results[0].geometry.location;
-    recenterMap(coord)
+
+    repositionMap(coord);
 
     // TODO: setPopover(address)
 
@@ -60,38 +127,57 @@ $('#address-form').submit(async e => {
   }
 });
 
-// TODO: SET POPOVER?
-// Set popover to display for a short time
-// const setPopover = content => {
-//   const $input = $('#zip');
-//   $input.popover('show', { content });
-//   setTimeout(() => $input.popover('hide', { content: '' }), 3000);
-// }
+$('#iss-now').click(async e => {
+  try {
+    const response = await $.ajax({
+      type: 'GET',
+      url: 'http://api.open-notify.org/iss-now.json',
+      dataType: 'json',
+    });
 
-// TODO: ISS Now button
+    const { latitude, longitude } = response.iss_position;
+    const coord = { lat: Number(latitude), lng: Number(longitude) };
 
-const visitLandmark = e => {
+    repositionMap(coord);
+
+  } catch (e) {
+    console.error(e);
+  }
+
+
+});
+
+const moveToLandmark = e => {
   const split = $(e.target).find('span').text().split(' ');
   const coord = { lat: Number(split[0]), lng: Number(split[1]) };
 
-  // TODO:
-    // get weather
-      // rerender
-    // get passtimes
-      // rerender
-
-  recenterMap(coord)
+  repositionMap(coord)
 }
 
 $('#landmark-buttons').children().each(function () {
-  $(this).click(visitLandmark);
+  $(this).click(moveToLandmark);
 });
 
 // Handle user preferences between metric and imperial measurements
-$('.btn-group-toggle').on('change', e => {
-  const url = '/maps/' + e.target.name;
-  const match = window.location.pathname === url;
-  if (!match) window.location = url;
+$('.btn-group-toggle').on('change', async e => {
+  try {
+    const scale = e.target.name;
+    const lat = marker.position.lat();
+    const lng = marker.position.lng();
+
+    const weather = await $.ajax({
+      type: 'POST',
+      url: '/api/weather',
+      data: { scale, lat, lng },
+      dataType: 'json'
+    });
+
+    writeWeather(weather);
+    map.setCenter({ lat, lng });
+
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 /********************* ALL MODAL WINDOWS *********************/
@@ -127,8 +213,6 @@ $('#add-landmark-search-btn').click(async function (e) {
 
   const $ulDiv = $('#add-landmark-results ul')
   $ulDiv.children().remove();
-
-  console.log(results);
 
   results.forEach(result => {
     const { formatted_address, geometry } = result
@@ -168,6 +252,8 @@ $('#add-landmark-format form').submit(async e => {
   try {
     e.preventDefault();
 
+    if (true) throw new Error('I threw an error!');
+
     const coordStrings = $('#coord').text().split(' ');
     const lat = coordStrings[0];
     const lng = coordStrings[1];
@@ -180,7 +266,7 @@ $('#add-landmark-format form').submit(async e => {
 
     const landmark = await $.ajax({
       type: 'POST',
-      url: '/landmarks',
+      url: '/api/landmarks',
       data: { name, lat, lng },
       dataType: 'json',
     });
@@ -188,34 +274,36 @@ $('#add-landmark-format form').submit(async e => {
     $status.text('Saved!')
       .removeClass().addClass('text-success');
 
-    // Reset modal window
-    $('#add-landmark').modal('hide');
+    repositionMap({ lat: Number(lat), lng: Number(lng) });
 
-    setTimeout(() => {
-      // Show new landmark on page
+    // After a modal is hidden, reset it and  Show new landmark on page
+    $('#add-landmark').modal('hide')
+      .on('hidden.bs.modal', function () {
+        const landmarkButton =
+          '<button class="landmark-buttons dropdown-item" type="button">' +
+            `${name}<span class='d-none'>${lat} ${lng} ${landmark._id}</span>` +
+          '</button>';
 
-      const landmarkButton =
-        '<button class="landmark-buttons dropdown-item" type="button">' +
-          `${name}<span class='d-none'>${lat} ${lng} ${landmark._id}</span>` +
-        '</button>';
+        this.$landmarkButton = $(landmarkButton)
+          .click(moveToLandmark)
+          .appendTo($('#landmark-buttons'));
 
-      this.$landmarkButton = $(landmarkButton)
-        .click(visitLandmark)
-        .appendTo($('#landmark-buttons'));
-
-      const landmarkListItem =
-        '<li class="list-group-item list-group-item-action">' +
-          `${name}<span class="d-none">$%${landmark._id}</span>` +
-        '</li>';
-      $('#remove-landmark-list').find('ul').append(landmarkListItem);
-    }, 500);
+        const landmarkListItem =
+          '<li class="list-group-item list-group-item-action">' +
+            `${name}<span class="d-none">$%${landmark._id}</span>` +
+          '</li>';
+        $('#remove-landmark-list').find('ul').append(landmarkListItem);
+      });
 
   } catch (e) {
+    if (!e.message) e.message = `${e.status}: ${e.statusText}`;
     $('#add-landmark-error')
-      .text(`${e.status}: ${e.statusText}`)
+      .text(e.message)
       .removeClass().addClass('text-danger');
   }
 });
+
+
 
 /********************* REMOVE LANDMARKS *********************/
 
@@ -241,7 +329,7 @@ $('#remove-landmark-button').click(async e => {
     // DELETE request
     await $.ajax({
       type: 'DELETE',
-      url: '/landmarks',
+      url: '/api/landmarks',
       data: { _id },
       dataType: 'json',
     });
@@ -257,7 +345,7 @@ $('#remove-landmark-button').click(async e => {
       $('#remove-landmark-confirm').addClass('d-none');
 
       // Remove deleted landmark from page
-      $('#landmark-buttons').each(function () {
+      $('#landmark-buttons').children().each(function () {
         const _idIsPresent = $(this).text().includes(_id);
         if (_idIsPresent) $(this).remove();
       });

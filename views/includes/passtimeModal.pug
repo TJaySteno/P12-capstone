@@ -8,6 +8,4 @@
       .modal-body
         ul.list-group
           each pass in passtimes
-            - const date = new Date(pass.risetime * 1000);
-            - const minutes = (pass.duration / 60).toFixed(2);
-            li.list-group-item #{date} for roughly #{minutes} minutes
+            li.list-group-item #{pass.time} #{pass.duration}

@@ -1,21 +1,18 @@
 const axios = require('axios');
 
-const formatCurrent = (current, system) => {
+const formatCurrent = (current, scale) => {
   const description = current.weather[0].description;
   const imgSrc = `http://openweathermap.org/img/w/${current.weather[0].icon}.png`;
 
   const { main, wind, clouds } = current;
 
-  const scale = system === 'imperial' ? 'F' : 'C';
-  const tempText = `${main.temp}&deg;${scale} with ${main.humidity}% humidity`;
+  const tempText = `${main.temp}&deg;${scale.temp} with ${main.humidity}% hum`;
 
   const windText = (() => {
     const directions = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N'];
     const direction = directions[Math.round((wind.deg / 360) * 16)];
 
-    const unitOfMeasure = system === 'imperial' ? 'mph' : 'm/s';
-
-    return `Winds blowing at ${wind.speed} ${unitOfMeasure}, ${direction}`;
+    return `Winds blowing at ${wind.speed} ${scale.wind}, ${direction}`;
   })()
 
   const cloudText = `Cloud cover is ${clouds.all}%`
@@ -35,22 +32,18 @@ const formatTime = dt => {
     else return hour + 'am'
   })();
 
-  return `${day}, ${time} UTC`;
+  return `${day}, ${time} GMT`;
 }
 
-const formatForecast = (forecastRaw, system) => {
+const formatForecast = (forecastRaw, scale) => {
   const { list } = forecastRaw;
   list.length = 4;
 
   return list.map(item => {
-    // {time}: {tempNow}, {main.humidity}% humidity, {weatherDesc}
     const { dt, main, weather, clouds, wind, rain, sys } = item;
     const time = formatTime(item.dt);
-    const temp = (() => {
-      const scale = system === 'imperial' ? 'F' : 'C';
-      return `${item.main.temp}&deg;${scale}`;
-    })();
-    const humidity = `${item.main.humidity}% humidity`;
+    const temp = `${item.main.temp}&deg;${scale.temp}`;
+    const humidity = `${item.main.humidity}% hum`;
     const description = weather[0].description;
 
     const text = `${time}: ${temp}, ${humidity}, ${description}`;
@@ -65,12 +58,27 @@ const getWeather = async (req, res, next) => {
   try {
     const weatherRequest = async path => {
       return new Promise(async (resolve, reject) => {
-
         const url = `http://api.openweathermap.org/data/2.5/${path}`;
-        const params = {
-          lat: req.coord.lat,
-          lon: req.coord.lng,
-          units: req.params.system,
+        const { lat, lng } = req.coord ? req.coord : req.body;
+
+        if (req.body.scale && req.body.scale === 'metric') {
+          req.scale = {
+            system: 'metric',
+            temp: 'C',
+            wind: 'm/s'
+          }
+        } else {
+          req.scale = {
+            system: 'imperial',
+            temp: 'F',
+            wind: 'mph'
+          }
+        }
+
+        let params = {
+          lat: Number(lat),
+          lon: Number(lng),
+          units: req.scale.system,
           APPID: process.env.WEATHER_KEY
         }
 
@@ -84,8 +92,8 @@ const getWeather = async (req, res, next) => {
     const currentRaw = await weatherRequest('weather');
     const forecastRaw = await weatherRequest('forecast');
 
-    const current = formatCurrent(currentRaw, req.params.system);
-    const forecast = formatForecast(forecastRaw, req.params.system);
+    const current = formatCurrent(currentRaw, req.scale);
+    const forecast = formatForecast(forecastRaw, req.scale);
 
     req.weather = { current, forecast };
 

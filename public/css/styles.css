@@ -13,7 +13,12 @@ body {
 }
 
 .weather-container {
-  max-width: 45%;
+  width: 100%;
+}
+
+#landmark-buttons {
+  max-height: 150px;
+  overflow-y: auto;
 }
 
 #current-weather * {
@@ -27,9 +32,8 @@ body {
 #forecast-content {
   max-height: 215px;
   overflow-y: auto;
+  white-space: nowrap;
 }
-
-/* NOTE: #forecast-content div needs to stay right and centered vertically */
 
 #add-landmark-results ul li {
   cursor: pointer;
@@ -48,7 +52,7 @@ body {
 
 @media (min-width: 775px) {
   .home-text, .error {
-    width: 50%;
+    width: 45%;
   }
 
   .map-container {
@@ -56,9 +60,9 @@ body {
     width: 50%;
   }
 
-  .review-container {
+  .weather-container {
     float: right;
-    width: 50%;
+    width: 45%;
   }
 
   .about {

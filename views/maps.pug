@@ -5,20 +5,21 @@ block content
     div
       #map.map-container.d-inline-block(value=mapCoord)
       .weather-container.d-inline-block
-        form#address-form.form-inline.mb-2.mx-auto.px-2.px-md-4
-          input#zip.form-control(type='text' placeholder='Address' value='Eiffel Tower' data-toggle='popover' data-placement='bottom' data-content='hey')
-          input.btn.btn-info.mx-1(type='submit' value='Search')
-          .btn-group
-            button.btn.btn-info(type='button') ISS Now
+        form#address-form.form-inline.container.mb-2.mx-auto
+          input#zip.form-control.col-6(type='text' placeholder='Address')
+          input.btn.btn-info.col-2.pl-1(type='submit' value='Search')
+          .btn-group.col-3.pl-1
+            button#iss-now.btn.btn-info(type='button') Find ISS
             button.btn.btn-info.dropdown-toggle.dropdown-toggle-split(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
             .dropdown-menu.dropdown-menu-right
-              h6.dropdown-header ISS Future
+              h6.dropdown-header ISS Passtimes
               button.dropdown-item(type="button" data-toggle="modal" data-target="#passtimesModal") Next 5 passes here
               .dropdown-divider
-              h6.dropdown-header Choose a landmark
+              h6.dropdown-header Manage Landmarks
               button.dropdown-item(type="button" data-toggle="modal" data-target="#add-landmark") Add one
               button.dropdown-item(type="button" data-toggle="modal" data-target="#remove-landmark") Remove one
               .dropdown-divider
+              h6.dropdown-header Choose a landmark
               #landmark-buttons
                 each lm in landmarks
                   button.dropdown-item(type="button")= lm.name
@@ -45,10 +46,10 @@ block content
             #weather-forecast.tab-pane.fade(role='tabpanel' aria-labelledby='weather-forecast-tab')
               ul#forecast-content.list-group.list-group-flush.rounded
                 each item in forecast
-                  li.list-group-item
+                  li.forecast-li.list-group-item
                     .d-inline-block.alert-info.rounded.p-0
                       img(src=item.imgSrc alt=item.imgAlt + ' icon')
-                    .d-inline-block
+                    .d-inline-block.pl-1
                       span !{item.text}
   include includes/passtimeModal
   include includes/addLandmarkModal

@@ -7,16 +7,18 @@
           span(aria-hidden="true") &times;
       .modal-body
         #add-landmark-search.show.input-group
-          input.form-control(type="text" placeholder="Landmark name or address" value="Eiffel Tower" aria-label="Landmark input" aria-describedby="add-landmark-search-btn")
+          input.form-control(type="text" placeholder="Landmark name or address" aria-label="Landmark input" aria-describedby="add-landmark-search-btn")
           .input-group-append
             button#add-landmark-search-btn.btn.btn-info(type="button") Search
         #add-landmark-results.hide.d-none
+          hr
+          p
+            i Select below or search again
           ul.list-group
             - // This will be based on results returned from Google
-            li.list-group-item.list-group-item-action
-              p Big Ben
-                span.d-none 123 321
         #add-landmark-format.hide.d-none
+          p
+            i Name your landmark and save
           form.mb-1
             .input-group
               input.form-control(type="text" name="name" placeholder="Name your landmark" aria-label="Landmark name" aria-describedby="landmark-name")

@@ -6,8 +6,8 @@ const getISS = async (req, res, next) => {
     const response = await axios.get(url);
     const { data } = response;
     const coord = {
-      lng: data.iss_position.longitude,
-      lat: data.iss_position.latitude
+      lat: data.iss_position.latitude,
+      lng: data.iss_position.longitude
     }
     req.issNow = data;
     req.coord = coord;
