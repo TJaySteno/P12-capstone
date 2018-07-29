@@ -60,7 +60,7 @@ const writeWeather = weather => {
         '<div class="d-inline-block alert-info rounded p-0">' +
           `<img src=${item.imgSrc} alt="${item.imgAlt} icon">` +
         '</div>' +
-        '<div class="d-inline-block">' +
+        '<div class="d-inline-block pl-1">' +
           `<span>${item.text}</span>` +
         '</div>' +
       '</li>'
@@ -200,13 +200,15 @@ $('.modal').each(function () {
   // One option: move to document formatting
 $('#add-landmark-search-btn').click(async function (e) {
 
-  // TODO: this needs to submit when you hit 'enter'
-
   const query = $(this).parent().prev().val();
+
+  console.log('add landmark search button', query);
 
   const results = await getGeocode(query);
 
-  const $ulDiv = $('#add-landmark-results ul')
+  console.log('add landmark search button', results);
+
+  const $ulDiv = $('#add-landmark-results ul');
   $ulDiv.children().remove();
 
   results.forEach(result => {
@@ -237,8 +239,8 @@ $('#add-landmark-results ul').click(e => {
 
   $('#add-landmark-results').addClass('d-none');
 
-  $($p[0]).text(split[0]);
-  $($p[1]).text(`${split[1]} ${split[2]}`);
+  $($p[1]).text(split[0]);
+  $($p[2]).text(`${split[1]} ${split[2]}`);
   $formatDiv.removeClass('d-none');
 });
 
