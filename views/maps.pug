@@ -15,15 +15,15 @@ block content
               h6.dropdown-header ISS Passtimes
               button.dropdown-item(type="button" data-toggle="modal" data-target="#passtimesModal") Next 5 passes here
               .dropdown-divider
-              h6.dropdown-header Manage Landmarks
-              button.dropdown-item(type="button" data-toggle="modal" data-target="#add-landmark") Add one
-              button.dropdown-item(type="button" data-toggle="modal" data-target="#remove-landmark") Remove one
-              .dropdown-divider
-              h6.dropdown-header Choose a landmark
-              #landmark-buttons
-                each lm in landmarks
-                  button.dropdown-item(type="button")= lm.name
-                    span.d-none= `${lm.coord.lat} ${lm.coord.lng} ${lm._id}`
+              #landmarks
+                h6.dropdown-header Landmarks
+                button.dropdown-item(type="button" data-toggle="modal" data-target="#add-landmark") Add a landmark
+                button.dropdown-item(type="button" data-toggle="modal" data-target="#remove-landmark") Remove a landmark
+                .dropdown-divider
+                #landmark-buttons
+                  each lm in landmarks
+                    button.dropdown-item(type="button")= lm.name
+                      span.d-none= `${lm.coord.lat} ${lm.coord.lng} ${lm._id}`
         .rounded.border.border-dark.bg-info.text-dark.text-left.w-100.p-3
           h4.text-center Local Weather
           ul#weather-tab.nav.nav-tabs.mx-2(role='tablist')

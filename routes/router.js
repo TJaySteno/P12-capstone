@@ -92,6 +92,21 @@ router.post('/api/geocode', async (req, res, next) => {
   }
 });
 
+// Request a new ISS location
+router.get('/api/iss', async (req, res, next) => {
+  try {
+    const url = 'http://api.open-notify.org/iss-now.json';
+    const response = await axios.get(url);
+
+    const { latitude, longitude } = response.data.iss_position;
+
+    res.send({ lat: Number(latitude), lng: Number(longitude) });
+
+  } catch (e) {
+    next(e);
+  }
+});
+
 // Get weather and passtimes for coordinates given in req.body
 router.post('/api/reposition', getPasstimes, getWeather, (req, res, next) => {
   const { passtimes, weather } = req;
@@ -99,6 +114,8 @@ router.post('/api/reposition', getPasstimes, getWeather, (req, res, next) => {
 });
 
 router.post('/api/weather', getWeather, (req, res, next) => res.send(req.weather));
+
+
 
 /**********************************************************
   DATABASE ROUTING

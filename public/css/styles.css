@@ -16,8 +16,8 @@ body {
   width: 100%;
 }
 
-#landmark-buttons {
-  max-height: 150px;
+#landmarks {
+  max-height: 175px;
   overflow-y: auto;
 }
 

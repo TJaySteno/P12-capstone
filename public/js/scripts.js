@@ -18,10 +18,9 @@ const getGeocode = query => {
   });
 }
 
-const repositionMap = coord => {
+const repositionMap = (coord, zoom) => {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log('repositionMap');
       const { lat, lng } = coord;
       const isMetric = window.location.pathname.includes('/metric');
       const scale = isMetric ? 'metric' : 'imperial';
@@ -37,7 +36,7 @@ const repositionMap = coord => {
       writePasstimes(response.passtimes);
 
       map.setCenter(coord);
-      map.setZoom(13);
+      map.setZoom(zoom || 5);
       marker.setPosition(coord);
 
     } catch (e) {
@@ -118,7 +117,7 @@ $('#address-form').submit(async e => {
 
     const coord = results[0].geometry.location;
 
-    repositionMap(coord);
+    repositionMap(coord, 10);
 
     // TODO: setPopover(address)
 
@@ -127,19 +126,15 @@ $('#address-form').submit(async e => {
   }
 });
 
+// Request a new ISS location
 $('#iss-now').click(async e => {
   try {
-    const response = await $.ajax({
+    const coord = await $.ajax({
       type: 'GET',
-      url: 'http://api.open-notify.org/iss-now.json',
+      url: '/api/iss',
       dataType: 'json',
     });
-
-    const { latitude, longitude } = response.iss_position;
-    const coord = { lat: Number(latitude), lng: Number(longitude) };
-
     repositionMap(coord);
-
   } catch (e) {
     console.error(e);
   }
@@ -151,7 +146,7 @@ const moveToLandmark = e => {
   const split = $(e.target).find('span').text().split(' ');
   const coord = { lat: Number(split[0]), lng: Number(split[1]) };
 
-  repositionMap(coord)
+  repositionMap(coord, 13);
 }
 
 $('#landmark-buttons').children().each(function () {
@@ -252,7 +247,7 @@ $('#add-landmark-format form').submit(async e => {
   try {
     e.preventDefault();
 
-    if (true) throw new Error('I threw an error!');
+    // if (.includes(html)) throw new Error('no html');
 
     const coordStrings = $('#coord').text().split(' ');
     const lat = coordStrings[0];
@@ -274,7 +269,7 @@ $('#add-landmark-format form').submit(async e => {
     $status.text('Saved!')
       .removeClass().addClass('text-success');
 
-    repositionMap({ lat: Number(lat), lng: Number(lng) });
+    repositionMap({ lat: Number(lat), lng: Number(lng) }, 13);
 
     // After a modal is hidden, reset it and  Show new landmark on page
     $('#add-landmark').modal('hide')
