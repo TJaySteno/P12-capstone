@@ -13,9 +13,12 @@ block projects
           - const { contentClass, rootName, url, title, description, skills } = project;
           div(class=contentClass id=rootName role="tabpanel" aria-labelledby=rootName + '-tab')
             h4
-              u
-                a.font-italic(href=url target="_blank")= title
-            p.text-justify.my-3= description
+              if url
+                u
+                  a.font-italic(href=url target="_blank")= title
+              else
+                p= title
+            p.text-left.my-3 !{description}
             each skill in skills
               span.badge.badge-pill.badge-primary= skill
           
