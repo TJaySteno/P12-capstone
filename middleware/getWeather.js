@@ -46,11 +46,10 @@ const formatForecast = (forecastRaw, scale) => {
     const humidity = `${item.main.humidity}% hum`;
     const description = weather[0].description;
 
-    const text = `${time}: ${temp}, ${humidity}, ${description}`;
-    const imgSrc = `http://openweathermap.org/img/w/04d.png`;
-    const imgAlt = description;
+    const text = `${time}: ${temp}, ${humidity}`;
+    const imgSrc = `http://openweathermap.org/img/w/${weather[0].icon}.png`;
 
-    return { text, imgSrc, imgAlt };
+    return { text, imgSrc, description };
   });
 }
 

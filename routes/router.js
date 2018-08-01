@@ -80,8 +80,6 @@ router.post('/api/geocode', async (req, res, next) => {
     const { query } = req.body;
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GOOGLE_KEY}`;
 
-    console.log('/api/geocode', query, url);
-
     const response = await axios.get(url);
     const results = response.data.results;
 

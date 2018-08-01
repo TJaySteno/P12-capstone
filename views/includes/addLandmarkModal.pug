@@ -6,10 +6,11 @@
         button.close(type="button" data-dismiss="modal" aria-label="Close")
           span(aria-hidden="true") &times;
       .modal-body
-        #add-landmark-search.show.input-group
-          input.form-control(type="text" placeholder="Landmark name or address" aria-label="Landmark input" aria-describedby="add-landmark-search-btn")
-          .input-group-append
-            button#add-landmark-search-btn.btn.btn-info(type="button") Search
+        #add-landmark-search.show
+          form.input-group
+            input.form-control(type="text" name="query" placeholder="Landmark name or address" aria-label="Landmark input" aria-describedby="add-landmark-search-btn")
+            .input-group-append
+              button.btn.btn-info(type="submit") Search
         #add-landmark-results.hide.d-none
           hr
           p
@@ -24,7 +25,7 @@
               input.form-control(type="text" name="name" placeholder="Name your landmark" aria-label="Landmark name" aria-describedby="landmark-name")
               .input-group-append
                 button.btn.btn-info(type="submit") Save
-          p 123 Mulberry Ln
-          p#coord.d-none 123 321
+          p Address filler
+          p#coord.d-none Coord filler
         p#add-landmark-error.d-none error
           

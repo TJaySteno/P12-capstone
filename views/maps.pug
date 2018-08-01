@@ -13,7 +13,7 @@ block content
             button.btn.btn-info.dropdown-toggle.dropdown-toggle-split(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
             .dropdown-menu.dropdown-menu-right
               h6.dropdown-header ISS Passtimes
-              button.dropdown-item(type="button" data-toggle="modal" data-target="#passtimesModal") Next 5 passes here
+              button.dropdown-item(type="button" data-toggle="modal" data-target="#passtimesModal") Next pass times
               .dropdown-divider
               #landmarks
                 h6.dropdown-header Landmarks
@@ -48,7 +48,7 @@ block content
                 each item in forecast
                   li.forecast-li.list-group-item
                     .d-inline-block.alert-info.rounded.p-0
-                      img(src=item.imgSrc alt=item.imgAlt + ' icon')
+                      img(src=item.imgSrc alt=item.description + ' icon' title=item.description)
                     .d-inline-block.pl-1
                       span !{item.text}
   include includes/passtimeModal

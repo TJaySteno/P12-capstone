@@ -58,7 +58,7 @@ const writeWeather = weather => {
     forecastHTML += (
       '<li class="forecast-li list-group-item">' +
         '<div class="d-inline-block alert-info rounded p-0">' +
-          `<img src=${item.imgSrc} alt="${item.imgAlt} icon">` +
+          `<img src=${item.imgSrc} alt="${item.description} icon" title=${item.description}>` +
         '</div>' +
         '<div class="d-inline-block pl-1">' +
           `<span>${item.text}</span>` +
@@ -195,18 +195,19 @@ $('.modal').each(function () {
 
 /********************* ADD LANDMARKS *********************/
 
+// Upon opening "Add Landmark" modal, focus input
+$('#add-landmark').on('shown.bs.modal', function () {
+  $(this).find('input').trigger('focus');
+});
+
 // Take input, test it against Google
   // Multiple options: display options
   // One option: move to document formatting
-$('#add-landmark-search-btn').click(async function (e) {
+$('#add-landmark-search form').submit(async e => {
+  e.preventDefault();
 
-  const query = $(this).parent().prev().val();
-
-  console.log('add landmark search button', query);
-
+  const query = e.target[0].value;
   const results = await getGeocode(query);
-
-  console.log('add landmark search button', results);
 
   const $ulDiv = $('#add-landmark-results ul');
   $ulDiv.children().remove();
@@ -242,12 +243,15 @@ $('#add-landmark-results ul').click(e => {
   $($p[1]).text(split[0]);
   $($p[2]).text(`${split[1]} ${split[2]}`);
   $formatDiv.removeClass('d-none');
+  $formatDiv.find('input').focus();
 });
 
 // Take the user-formatted name and post it to be saved in the DB
 $('#add-landmark-format form').submit(async e => {
   try {
     e.preventDefault();
+
+    
 
     // if (.includes(html)) throw new Error('no html');
 
@@ -277,7 +281,7 @@ $('#add-landmark-format form').submit(async e => {
     $('#add-landmark').modal('hide')
       .on('hidden.bs.modal', function () {
         const landmarkButton =
-          '<button class="landmark-buttons dropdown-item" type="button">' +
+          '<button class="dropdown-item" type="button">' +
             `${name}<span class='d-none'>${lat} ${lng} ${landmark._id}</span>` +
           '</button>';
 
