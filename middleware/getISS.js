@@ -1,5 +1,6 @@
 const axios = require('axios');
 
+// Request current position of the ISS
 const getISS = async (req, res, next) => {
   try {
     const url = 'http://api.open-notify.org/iss-now.json';

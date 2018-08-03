@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+// Define landmark schema
 const landmarkSchema = new Schema({
   coord: {
     lng: {

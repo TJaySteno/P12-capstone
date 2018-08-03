@@ -3,10 +3,10 @@ extends layout
 block content
   .mx-auto.p-3.alert-info.border.border-info.rounded.shadow.clearfix
     div
-      #map.map-container.d-inline-block(value=mapCoord)
-      .weather-container.d-inline-block
+      #map.d-inline-block(value=mapCoord)
+      #info-container.d-inline-block
         form#address-form.form-inline.container.mb-2.mx-auto
-          input#zip.form-control.col-6(type='text' placeholder='Address')
+          input#address.form-control.col-6(type='text' placeholder='Address')
           input.btn.btn-info.col-2.ml-1(type='submit' value='Search')
           .btn-group.col-3.pl-1
             button#iss-now.btn.btn-info(type='button') Find ISS

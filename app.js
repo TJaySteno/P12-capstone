@@ -15,20 +15,32 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-app.use(logger('dev'));
+if (process.env.NODE_ENV !== 'test') {
+  app.use(logger('dev')); }
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
-  const db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'connection error:'));
-  db.once('open', () => {
-    console.log('MONGODB connection open');
-    next();
-  });
+  try {
+    const mongoURI = (process.env.NODE_ENV !== 'test')
+      ? process.env.MONGODB_URI
+      : process.env.MONGODB_URI_TEST;
+    console.log(mongoURI);
+
+    mongoose.connect(mongoURI, { useNewUrlParser: true });
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', () => {
+      console.log(('MONGODB connection open'));
+      next();
+    });
+
+  } catch (e) {
+    res.status(e.status || 500);
+    next(e);
+  }
 });
 
 app.use(router);
@@ -44,9 +56,14 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500);
-  const options = { err, active: [false,false,false] };
+  const options = {
+    status: res.statusCode,
+    message: res.locals.message,
+    error: res.locals.err,
+    active: [false,false,false]
+  };
 
-  console.error(err);
+  console.log(err.stack);
 
   res.render('error', options);
 });

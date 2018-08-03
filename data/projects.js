@@ -37,7 +37,7 @@ module.exports = [
   {
     id: 6,
     title: 'Build a Content Scraper',
-    description: "The sixth project was my first Node.js project for my Tech Degree. Using Node.js and different packages found through npm, this app will scrape information off of a mock website built for this course (<a src='http://shirts4mike.com/shirts.php'>http://shirts4mike.com/shirts.php</a>). Using an npm content scraper, I will grab and sort the vital information. This will then be stored in a CSV file using another npm package. I chose these two packages due to their widespread use and the recency of their latest updates.",
+    description: "The sixth project was my first Node.js project for my Tech Degree. Using Node.js and different packages found through npm, this app will scrape information off of a mock website built for this course. Using an npm content scraper, I will grab and sort the vital information. This will then be stored in a CSV file using another npm package. I chose these two packages due to their widespread use and the recency of their latest updates.",
     skills: ['Node.js', 'npm']
   },
   {

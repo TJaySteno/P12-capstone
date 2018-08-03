@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
-    "watch": "nodemon ./bin/www"
+    "start": "SET NODE_ENV=dev && nodemon ./bin/www",
+    "test": "mocha --timeout 10000"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -13,11 +13,14 @@
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "mongoose": "^5.2.4",
-    "morgan": "~1.9.0",
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^2.0.1",
     "dotenv": "^6.0.0",
-    "nodemon": "^1.18.1"
+    "mocha": "^2.4.5",
+    "nodemon": "^1.18.1",
+    "morgan": "~1.9.0"
   }
 }
