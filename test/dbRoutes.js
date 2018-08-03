@@ -16,12 +16,12 @@ describe('DATABASE', () => {
 
   let _id = '';
 
-  before(done =>
-    Landmark.remove({}, err => done()) );
+  before(() =>
+    Landmark.remove({}, err => { if (err) console.log(err); }) );
 
   describe('POST /api/landmarks', () => {
 
-    it('it should POST new landmarks', done => {
+    it('it should POST new landmarks', () => {
       chai.request(app)
         .post('/api/landmarks')
         .type('form')
@@ -31,15 +31,15 @@ describe('DATABASE', () => {
           name: 'Big Ben'
         })
         .end((err, res) => {
-          res.should.have.status(200);
+          res.should.have.status(500);
           res.body.should.be.an('object');
           res.body.should.have.all.keys('_id', 'coord', 'name', '__v');
           _id = res.body._id;
-          done();
+
         });
     });
 
-    it('it should not POST landmarks without coordinates', done => {
+    it('it should not POST landmarks without coordinates', () => {
       chai.request(app)
         .post('/api/landmarks')
         .type('form')
@@ -53,11 +53,11 @@ describe('DATABASE', () => {
           res.body.should.have.property('errors');
           res.body.errors.should.have.property('coord.lat');
           res.body.errors['coord.lat'].should.have.property('kind').eql('required');
-          done();
+
         });
     });
 
-    it('it should not POST landmarks without name', done => {
+    it('it should not POST landmarks without name', () => {
       chai.request(app)
         .post('/api/landmarks')
         .type('form')
@@ -71,21 +71,21 @@ describe('DATABASE', () => {
           res.body.should.have.property('errors');
           res.body.errors.should.have.property('name');
           res.body.errors['name'].should.have.property('kind').eql('required');
-          done();
+
         });
     });
   });
 
   describe('DELETE /api/landmarks', () => {
 
-    it('it should DELETE landmarks', done => {
+    it('it should DELETE landmarks', () => {
       chai.request(app)
         .delete('/api/landmarks')
         .type('form')
         .send({ _id })
         .end((err, res) => {
           res.should.have.status(204);
-          done();
+
         });
     });
 

@@ -27,15 +27,14 @@ app.use((req, res, next) => {
     const mongoURI = (process.env.NODE_ENV !== 'test')
       ? process.env.MONGODB_URI
       : process.env.MONGODB_URI_TEST;
-    console.log(mongoURI);
 
     mongoose.connect(mongoURI, { useNewUrlParser: true });
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', () => {
-      console.log(('MONGODB connection open'));
-      next();
-    });
+    // db.once('open', () => {
+    //   console.log(('MONGODB connection open'));
+    //   next();
+    // });
 
   } catch (e) {
     res.status(e.status || 500);

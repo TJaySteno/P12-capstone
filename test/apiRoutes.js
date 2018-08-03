@@ -14,20 +14,19 @@ chai.use(chaiHttp);
 describe('EXTERNAL API ROUTES', () => {
 
   describe('GET /api/iss', () => {
-    it('it should current ISS location', done => {
+    it('it should current ISS location', () => {
       chai.request(app)
         .get('/api/iss')
         .end((err, res) => {
           res.should.have.status(200);
           res.body.should.be.an('object');
           res.body.should.have.all.keys('lat', 'lng');
-          done();
         });
     });
   });
 
   describe('POST /api/resposition', () => {
-    it('it should return formatted info on given coordinates', done => {
+    it('it should return formatted info on given coordinates', () => {
       chai.request(app)
         .post('/api/reposition')
         .type('form')
@@ -48,12 +47,10 @@ describe('EXTERNAL API ROUTES', () => {
           res.body.weather.classTemp.should.be.an('object');
           res.body.weather.current.should.be.an('object');
           res.body.weather.forecast.should.be.an('array');
-
-          done();
         });
     });
 
-    it('it should require coordinates', done => {
+    it('it should require coordinates', () => {
       chai.request(app)
         .post('/api/reposition')
         .type('form')
@@ -64,13 +61,12 @@ describe('EXTERNAL API ROUTES', () => {
         .end((err, res) => {
           res.should.have.status(500);
           res.body.should.be.a('object');
-          done();
         });
     });
   });
 
   describe('POST /api/weather', () => {
-    it('it should retrieve the weather', done => {
+    it('it should retrieve the weather', () => {
       chai.request(app)
         .post('/api/weather')
         .type('form')
@@ -87,9 +83,7 @@ describe('EXTERNAL API ROUTES', () => {
           res.body.classTemp.should.be.an('object');
           res.body.current.should.be.an('object');
           res.body.forecast.should.be.an('array');
-          done();
         });
     });
   });
-
 });
