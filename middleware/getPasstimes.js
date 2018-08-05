@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-// For a given coordinate (req.coord), get the next 5 passtimes
+// Get the next passtimes at given coordinates
 const getPasstimes = async (req, res, next) => {
   try {
     const { lat, lng } = req.coord ? req.coord : req.body;
@@ -19,6 +19,7 @@ const getPasstimes = async (req, res, next) => {
     });
 
     next();
+    
   } catch (e) { next(e) }
 };
 

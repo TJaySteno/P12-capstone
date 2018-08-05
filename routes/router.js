@@ -13,13 +13,47 @@ const getLandmarks = require('../middleware/getLandmarks');
 const router = express.Router();
 
 /**********************************************************
-  ROUTING WEBPAGES
+  WEBPAGE ROUTING
 **********************************************************/
 
 /* GET home page. */
 router.get('/', (req, res) => res.render('home', { active: [true,false,false] }));
 
+/* GET maps page */
+router.get('/maps',
+  getISS,
+  getPasstimes,
+  getWeather,
+  getLandmarks,
+  async (req, res, next) => {
+    try {
+
+      const googleMapURL = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_KEY}&callback=initMap&libraries=places`;
+
+      const options = {
+        googleMapURL,
+        mapCoord: `${req.coord.lat} ${req.coord.lng}`,
+        active: [false,true,false],
+
+        passtimes: req.passtimes,
+        landmarks: req.landmarks,
+
+        classTemp: req.weather.classTemp,
+
+        current: req.weather.current,
+        forecast: req.weather.forecast
+      }
+
+      res.render('maps', options);
+
+    } catch (e) { next(e) }
+  }
+);
+
+/* GET about page */
 router.get('/about', (req, res) => {
+
+  // Format project data for rendering
   const projects = projectData.map(project => {
     const { id } = project;
 
@@ -39,42 +73,13 @@ router.get('/about', (req, res) => {
 
 });
 
-router.get('/maps', getISS, getPasstimes, getLandmarks, getWeather, async (req, res, next) => {
-  try {
-    const classTemp = {
-      f: 'btn btn-secondary',
-      c: 'btn btn-secondary'
-    }
 
-    req.scale.system === 'imperial'
-      ? classTemp.f += ' active'
-      : classTemp.c += ' active';
-
-    const options = {
-      googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_KEY}&callback=initMap&libraries=places`,
-      mapCoord: `${req.coord.lat} ${req.coord.lng}`,
-
-      active: [false,true,false],
-
-      passtimes: req.passtimes,
-      landmarks: req.landmarks,
-
-      classTemp,
-
-      current: req.weather.current,
-      forecast: req.weather.forecast
-    }
-
-    res.render('maps', options);
-
-  } catch (e) { next(e) }
-});
 
 /**********************************************************
-  API ROUTING
+  EXTERNAL API ROUTING
 **********************************************************/
 
-// Create a new Landmark from data provided
+// Make a geocode request to Google Maps
 router.post('/api/geocode', async (req, res, next) => {
   try {
     const { query } = req.body;
@@ -83,16 +88,15 @@ router.post('/api/geocode', async (req, res, next) => {
     const response = await axios.get(url);
     const results = response.data.results;
 
-    res.send(results);
+    res.json(results);
 
   } catch (e) {
-    if (e.status) res.status(e.status);
-    else res.status(500);
-    next(e);
+    res.status(e.status || 500);
+    res.json(err);
   }
 });
 
-// Request a new ISS location
+// Request current ISS location
 router.get('/api/iss', async (req, res, next) => {
   try {
     const url = 'http://api.open-notify.org/iss-now.json';
@@ -100,20 +104,29 @@ router.get('/api/iss', async (req, res, next) => {
 
     const { latitude, longitude } = response.data.iss_position;
 
-    res.send({ lat: Number(latitude), lng: Number(longitude) });
+    res.json({ lat: Number(latitude), lng: Number(longitude) });
 
   } catch (e) {
-    next(e);
+    res.status(e.status || 500);
+    res.json(err);
   }
 });
 
 // Get weather and passtimes for coordinates given in req.body
-router.post('/api/reposition', getPasstimes, getWeather, (req, res, next) => {
-  const { passtimes, weather } = req;
-  res.send({ weather, passtimes });
-});
+router.post('/api/reposition',
+  getPasstimes,
+  getWeather,
+  (req, res) => {
+    const { passtimes, weather } = req;
+    res.json({ weather, passtimes });
+  }
+);
 
-router.post('/api/weather', getWeather, (req, res, next) => res.send(req.weather));
+// Get weather for coordinates in req.body
+router.post('/api/weather',
+  getWeather,
+  (req, res) => res.json(req.weather)
+);
 
 
 
@@ -121,38 +134,31 @@ router.post('/api/weather', getWeather, (req, res, next) => res.send(req.weather
   DATABASE ROUTING
 **********************************************************/
 
-// Create a new Landmark from data provided
-router.post('/api/landmarks', async (req, res, next) => {
-  try {
-    const { name, lat, lng } = req.body;
-    const coord = { lat, lng };
-    const newLandmark = { name, coord };
+// Save a new Landmark to the database
+router.post('/api/landmarks', async (req, res) => {
+  const { name, lat, lng } = req.body;
+  const coord = { lat, lng };
+  const newLandmark = { name, coord };
 
-    const landmark = new Landmark({ name, coord });
-    landmark.save((err, lm) => {
-      if (err) throw err;
-      res.send(lm);
-    });
-
-  } catch (e) {
-    if (e.status) res.status(e.status);
-    else res.status(500);
-    res.send(e);
-  }
+  const landmark = new Landmark({ name, coord });
+  landmark.save((err, lm) => {
+    if (err) {
+      res.status(err.status || 500);
+      return res.json(err);
+    }
+    res.json(lm);
+  });
 });
 
-// Delete a Landmark by the provided '_id'
-router.delete('/api/landmarks', async (req, res, next) => {
-  try {
-    Landmark.findByIdAndDelete(req.body._id, err => {
-      if (err) throw err;
-      res.sendStatus(204);
-    });
-  } catch (e) {
-    if (e.status) res.status(e.status);
-    else res.status(500);
-    res.send(e);
-  }
+// Delete a Landmark from the database
+router.delete('/api/landmarks', async (req, res) => {
+  Landmark.findByIdAndDelete(req.body._id, err => {
+    if (err) {
+      res.status(err.status || 500);
+      return res.json(err);
+    }
+    res.sendStatus(204);
+  });
 });
 
 module.exports = router;

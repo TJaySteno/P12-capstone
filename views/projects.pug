@@ -1,26 +1,23 @@
 extends about
 
 block projects
-  .row.border-top.border-secondary.mx-4.py-4
-    .border-right.border-secondary.col-3.m-0.pl-0
+  .row.border-top.border-info.mx-4.py-4
+    #projects-tab-list.border-right.border-info.col-3.m-0.pl-0
       #projects-tab.nav.flex-column.nav-pills(role="tablist" aria-orientation="vertical")
         each project in projects
           - const { rootName, tabClass, tabSelected, id } = project;
           a(id=(rootName + '-tab') class=tabClass href=('#' + rootName) data-toggle="pill" role="tab" aria-controls=rootName aria-selected=tabSelected)= `Project ${id}`
     .col-9
-      #projects-tabContent.tab-content
+      #projects-content.tab-content
         each project in projects
           - const { contentClass, rootName, url, title, description, skills } = project;
           div(class=contentClass id=rootName role="tabpanel" aria-labelledby=rootName + '-tab')
             h4
               if url
-                u
+                u.text-primary
                   a.font-italic(href=url target="_blank")= title
               else
                 p= title
             p.text-left.my-3 !{description}
             each skill in skills
-              span.badge.badge-pill.badge-primary= skill
-          
-          
-          
+              span.badge.badge-pill.badge-info= skill

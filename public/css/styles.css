@@ -1,10 +1,19 @@
+/**********************************************************
+  ALL
+**********************************************************/
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
 }
 
-.map-container {
+/**********************************************************
+  /MAPS
+**********************************************************/
+
+/*************** LEFT SIDE ***************/
+#map {
   height: 400px;
   width: 100%;
   -webkit-box-shadow: 0px 3px 10px 2px rgba(0,0,0,0.4);
@@ -12,29 +21,35 @@ body {
   box-shadow: 0px 3px 10px 2px rgba(0,0,0,0.4);
 }
 
-.weather-container {
+/*************** RIGHT SIDE ***************/
+#info-container {
   width: 100%;
 }
 
+/* Dropdown menu */
 #landmarks {
   max-height: 175px;
   overflow-y: auto;
 }
 
+/* 'Current' tab */
 #current-weather * {
   margin: 0 1rem;
 }
-
 #current-weather p {
   font-style: italic;
 }
 
+/* 'Forecast' tab */
 #forecast-content {
   max-height: 215px;
   overflow-y: auto;
   white-space: nowrap;
 }
 
+/*************** MODAL WINDOWS ***************/
+
+/* Add landmark */
 #add-landmark-results ul li {
   cursor: pointer;
   white-space: nowrap;
@@ -42,8 +57,34 @@ body {
   text-overflow: ellipsis;
 }
 
+/* Remove landmark */
 #remove-landmark-list li {
   cursor: pointer;
+}
+
+/**********************************************************
+  /ABOUT
+**********************************************************/
+
+/* Projects tabs */
+#projects-tab-list {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+#projects-tab .nav-link {
+  color: #17a2b8;
+}
+
+#projects-tab .active {
+  background-color: #17a2b8!important;
+  color: white!important;
+}
+
+/* Projects content */
+#projects-content {
+  max-height: 350px;
+  overflow-y: auto;
 }
 
 .badge-pill {
@@ -51,21 +92,32 @@ body {
 }
 
 @media (min-width: 775px) {
-  .home-text, .error {
+  /**********************************************************
+    MEDIUM SCREENS AND UP
+  **********************************************************/
+
+  /*************** /HOME ***************/
+  #home-text, #error {
     width: 45%;
   }
 
-  .map-container {
+  #home-text h2 {
+    width: 100%;
+  }
+
+  /*************** /MAPS ***************/
+  #map {
     float: left;
     width: 50%;
   }
 
-  .weather-container {
+  #info-container {
     float: right;
     width: 45%;
   }
 
-  .about {
+  /*************** /ABOUT ***************/
+  #about {
     width: 85%;
   }
 }
