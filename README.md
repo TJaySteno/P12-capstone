@@ -21,7 +21,10 @@ __Grader's Overall Comments:__
 
 For deployment on your own machine you will need to set a few variables. First, request API keys for both Google Maps (link) and Open Weather (link). Once you have those, place them in the code below and save the file as ".env" in the root directory. Finally, start up more Mongo DB Daemon and you're ready to go!
 
-GOOGLE_KEY=<your API key for Google Maps>
-WEATHER_KEY=<your API key for Open Weather>
+GOOGLE_KEY=\<your API key for Google Maps\>
+
+WEATHER_KEY=\<your API key for Open Weather\>
+
 MONGODB_URI=mongodb://localhost:27017/iss-weather
+
 MONGODB_URI_TEST=mongodb://localhost:27017/iss-weather-test
