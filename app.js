@@ -23,22 +23,18 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  try {
-    const mongoURI = (process.env.NODE_ENV !== 'test')
-      ? process.env.MONGODB_URI
-      : process.env.MONGODB_URI_TEST;
+  const mongoURI = (process.env.NODE_ENV !== 'test')
+    ? process.env.MONGODB_URI
+    : process.env.MONGODB_URI_TEST;
 
-    mongoose.connect(mongoURI, { useNewUrlParser: true });
-    const db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-    // db.once('open', () => {
-    //   console.log(('MONGODB connection open'));
-    //   next();
-    // });
-
-  } catch (e) {
-    res.status(e.status || 500);
-    next(e);
+  mongoose.connect(mongoURI, { useNewUrlParser: true });
+  const db = mongoose.connection;
+  db.on('error', console.error.bind(console, 'connection error:'));
+  if (process.env.NODE_ENV !== 'test') {
+    db.once('open', () => {
+      console.log(('MONGODB connection open'));
+      next();
+    });
   }
 });
 
