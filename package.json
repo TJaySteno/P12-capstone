@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "SET NODE_ENV=production && node ./bin/www",
+    "start": "heroku config:set NODE_ENV=production && node ./bin/www",
     "watch": "SET NODE_ENV=dev && nodemon ./bin/www",
     "test": "mocha --timeout 10000"
   },
