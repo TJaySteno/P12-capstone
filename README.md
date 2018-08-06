@@ -11,20 +11,12 @@ This project ended up being a bit of a struggle for me, but here on the other si
 
 ---
 
-__Grade:__ 
+__Grade:__
 
-__Grader's Overall Comments:__ 
+__Grader's Overall Comments:__
 
 ---
 
 #### _Special Instructions for Setup_
 
-For deployment on your own machine you will need to set a few variables. First, request API keys for both Google Maps (link) and Open Weather (link). Once you have those, place them in the code below and save the file as ".env" in the root directory. Finally, start up your MongoDB Daemon and you're ready to go!
-
-GOOGLE_KEY=\<your API key for Google Maps\>
-
-WEATHER_KEY=\<your API key for Open Weather\>
-
-MONGODB_URI=mongodb://localhost:27017/iss-weather
-
-MONGODB_URI_TEST=mongodb://localhost:27017/iss-weather-test
+For deployment on your local machine you will need to set a few variables. First, request free API keys from both Google Maps (https://cloud.google.com/console/google/maps-apis/overview) and Open Weather (https://openweathermap.org/price). Once you have those, place them into the "config.env" file and rename it as ".env". Finally, start up your MongoDB Daemon and you're ready to go! Note that if your MongoDB Daemon is running on a different port you will need to change that in the ".env" file.
