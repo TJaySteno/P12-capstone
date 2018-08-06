@@ -91,9 +91,9 @@ body {
   cursor: default;
 }
 
-@media (min-width: 775px) {
+@media (min-width: 992px) {
   /**********************************************************
-    MEDIUM SCREENS AND UP
+    DESKTOP SCREENS
   **********************************************************/
 
   /*************** /HOME ***************/

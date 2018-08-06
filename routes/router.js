@@ -5,6 +5,7 @@ const axios = require('axios');
 const Landmark = require('../models/Landmark');
 const projectData = require('../data/projects');
 
+const checkSecurity = require('../middleware/checkSecurity');
 const getISS = require('../middleware/getISS');
 const getWeather = require('../middleware/getWeather');
 const getPasstimes = require('../middleware/getPasstimes');
@@ -17,10 +18,17 @@ const router = express.Router();
 **********************************************************/
 
 /* GET home page. */
-router.get('/', (req, res) => res.render('home', { active: [true,false,false] }));
+router.get('/',
+  checkSecurity,
+  (req, res) => {
+    req.options.active = 'home';
+    res.render('home', req.options);
+  }
+);
 
 /* GET maps page */
 router.get('/maps',
+  checkSecurity,
   getISS,
   getPasstimes,
   getWeather,
@@ -29,49 +37,45 @@ router.get('/maps',
     try {
 
       const googleMapURL = `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_KEY}&callback=initMap&libraries=places`;
+      const active = 'maps';
 
-      const options = {
+      req.options = {
+        ...req.options,
         googleMapURL,
-        mapCoord: `${req.coord.lat} ${req.coord.lng}`,
-        active: [false,true,false],
+        active
+      };
 
-        passtimes: req.passtimes,
-        landmarks: req.landmarks,
+      res.render('maps', req.options);
 
-        classTemp: req.weather.classTemp,
-
-        current: req.weather.current,
-        forecast: req.weather.forecast
-      }
-
-      res.render('maps', options);
-
-    } catch (e) { next(e) }
+    } catch (e) {
+      next(e);
+    }
   }
 );
 
 /* GET about page */
-router.get('/about', (req, res) => {
+router.get('/about',
+  checkSecurity,
+  (req, res) => {
+    // Format project data for rendering
+    const projects = projectData.map(project => {
+      const { id } = project;
 
-  // Format project data for rendering
-  const projects = projectData.map(project => {
-    const { id } = project;
+      let tabClass = 'nav-link';
+      if (id == 1) tabClass += ' active';
+      let contentClass = 'tab-pane px-2';
+      if (id == 1) contentClass += ' show active';
 
-    let tabClass = 'nav-link';
-    if (id === 1) tabClass += ' active';
-    let contentClass = 'tab-pane px-2';
-    if (id === 1) contentClass += ' show active';
+      const rootName = `project-${id}`;
+      const tabSelected = (id === 1) ? 'true' : 'false';
 
-    const rootName = `project-${id}`;
-    const tabSelected = (id === 1) ? 'true' : 'false';
+      return { ...project, tabClass, contentClass, rootName, tabSelected };
 
-    return { ...project, tabClass, contentClass, rootName, tabSelected };
+    });
 
-  });
-
-  res.render('projects', { projects, active: [false,false,true] });
-
-});
+    res.render('projects', { projects, active: 'about' });
+  }
+);
 
 
 
@@ -93,7 +97,7 @@ router.post('/api/geocode', async (req, res, next) => {
   } catch (e) {
     res.status(e.status || 500);
     res.json(err);
-  }
+  };
 });
 
 // Request current ISS location
@@ -109,7 +113,7 @@ router.get('/api/iss', async (req, res, next) => {
   } catch (e) {
     res.status(e.status || 500);
     res.json(err);
-  }
+  };
 });
 
 // Get weather and passtimes for coordinates given in req.body
@@ -117,15 +121,15 @@ router.post('/api/reposition',
   getPasstimes,
   getWeather,
   (req, res) => {
-    const { passtimes, weather } = req;
-    res.json({ weather, passtimes });
+    const { current, forecast, passtimes } = req.options;
+    res.json({ current, forecast, passtimes });
   }
 );
 
 // Get weather for coordinates in req.body
 router.post('/api/weather',
   getWeather,
-  (req, res) => res.json(req.weather)
+  (req, res) => res.json(req.options)
 );
 
 
@@ -156,7 +160,7 @@ router.delete('/api/landmarks', async (req, res) => {
     if (err) {
       res.status(err.status || 500);
       return res.json(err);
-    }
+    };
     res.sendStatus(204);
   });
 });

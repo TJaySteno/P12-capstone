@@ -19,7 +19,7 @@ const formatCurrent = (current, scale) => {
   const cloudText = `Cloud cover is ${clouds.all}%`;
 
   return { description, imgSrc, tempText, windText, cloudText };
-}
+};
 
 // Convert millisecond string into readable format
 const formatTime = dt => {
@@ -31,7 +31,7 @@ const formatTime = dt => {
   const time = (() => {
     let hour = date.getUTCHours() + 1;
     if (hour > 12) return (hour - 12) + 'pm';
-    else return hour + 'am'
+    else return hour + 'am';
   })();
 
   return `${day}, ${time} GMT`;
@@ -54,7 +54,7 @@ const formatForecast = (forecastRaw, scale) => {
 
     return { text, imgSrc, description };
   });
-}
+};
 
 // Store values for 'metric' or 'imperial' systems
 const determineScaleValues = scale => {
@@ -63,15 +63,15 @@ const determineScaleValues = scale => {
       system: 'metric',
       temp: 'C',
       wind: 'm/s'
-    }
+    };
   } else {
     return {
       system: 'imperial',
       temp: 'F',
       wind: 'mph'
-    }
-  }
-}
+    };
+  };
+};
 
 // Request current or forecasted weather
 const weatherRequest = async (path, req) => {
@@ -85,7 +85,7 @@ const weatherRequest = async (path, req) => {
         lon: Number(lng),
         units: req.scale.system,
         APPID: process.env.WEATHER_KEY
-      }
+      };
 
       const response = await axios.get(url, { params });
 
@@ -93,9 +93,9 @@ const weatherRequest = async (path, req) => {
 
     } catch (e) {
       return reject(res);
-    }
+    };
   });
-}
+};
 
 // Request weather and return formatted values
 const getWeather = async (req, res, next) => {
@@ -106,7 +106,7 @@ const getWeather = async (req, res, next) => {
     const classTemp = {
       f: 'btn btn-secondary',
       c: 'btn btn-secondary'
-    }
+    };
     req.scale.system === 'imperial'
       ? classTemp.f += ' active'
       : classTemp.c += ' active';
@@ -117,13 +117,18 @@ const getWeather = async (req, res, next) => {
     const current  = formatCurrent(currentRaw, req.scale);
     const forecast = formatForecast(forecastRaw, req.scale);
 
-    req.weather = { classTemp, current, forecast };
+    req.options = {
+      ...req.options,
+      classTemp,
+      current,
+      forecast
+    };
 
     next();
 
   } catch (e) {
     next(e);
-  }
+  };
 };
 
 module.exports = getWeather;

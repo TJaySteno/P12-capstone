@@ -8,10 +8,15 @@ const getLandmarks = async (req, res, next) => {
   try {
     const landmarks = Landmark.find({}, (err, landmarks) => {
       if (err) throw err;
-      req.landmarks = landmarks;
+      req.options = {
+        ...req.options,
+        landmarks
+      };
       next();
     });
-  } catch (e) { next(e) }
+  } catch (e) {
+    next(e);
+  };
 };
 
 module.exports = getLandmarks;

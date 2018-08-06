@@ -12,7 +12,7 @@ function initMap () {
 
   map = new google.maps.Map(mapDiv, { center, zoom: 5 });
   marker = new google.maps.Marker({ map, position: center });
-}
+};
 
 // Instantly invoke the rest to avoid global scope
 (() => {
@@ -34,7 +34,7 @@ function initMap () {
         resolve(response);
       } catch (e) {
         reject(e);
-      }
+      };
     });
   };
 
@@ -47,7 +47,7 @@ function initMap () {
         const scale = isMetric ? 'metric' : 'imperial';
         const response = await request('POST', '/api/reposition', { lat, lng, scale });
 
-        writeWeather(response.weather);
+        writeWeather(response.current, response.forecast);
         writePasstimes(response.passtimes);
 
         map.setCenter(coord);
@@ -57,13 +57,12 @@ function initMap () {
       } catch (e) {
         console.error(e);
         reject(e);
-      }
+      };
     });
   };
 
   // Write new values for current and forecasted weather
-  const writeWeather = weather => {
-    const { current, forecast } = weather;
+  const writeWeather = (current, forecast) => {
 
     const titleHTML = current.description +
       `<img src=${current.imgSrc} alt="${current.description} icon">`;
@@ -123,7 +122,7 @@ function initMap () {
 
     } catch (e) {
       console.error(e);
-    }
+    };
   });
 
   // Request a new ISS location
@@ -133,7 +132,7 @@ function initMap () {
       reposition(coord);
     } catch (e) {
       console.error(e);
-    }
+    };
   });
 
   // Interpret a landmark button and reposition the app accordingly
@@ -158,12 +157,12 @@ function initMap () {
 
       const weather = await request('POST', '/api/weather', { scale, lat, lng });
 
-      writeWeather(weather);
+      writeWeather(weather.current, weather.forecast);
       map.setCenter({ lat, lng });
 
     } catch (e) {
       console.error(e);
-    }
+    };
   });
 
   /********************* ALL MODAL WINDOWS *********************/
@@ -175,10 +174,12 @@ function initMap () {
 
       $(this).find('.hide').each(function () {
         if (!$(this).hasClass('d-none'))
-          $(this).addClass('d-none'); });
+          $(this).addClass('d-none');
+        });
 
       $(this).find('.show').each(function () {
-        $(this).removeClass('d-none'); });
+        $(this).removeClass('d-none');
+      });
 
       $(this).find('#add-landmark-error')
         .removeClass().addClass('d-none');
@@ -192,7 +193,8 @@ function initMap () {
 
   // Upon opening "Add Landmark" modal, focus input
   $('#add-landmark').on('shown.bs.modal', function () {
-    $(this).find('input').trigger('focus'); });
+    $(this).find('input').trigger('focus');
+  });
 
   // Geocode a user query and post it to #add-landmark-results
   $('#add-landmark-search form').submit(async e => {
@@ -285,7 +287,7 @@ function initMap () {
       $('#add-landmark-error')
         .text(e.message)
         .removeClass().addClass('text-danger');
-    }
+    };
   });
 
   /********************* REMOVE LANDMARKS *********************/
@@ -336,6 +338,6 @@ function initMap () {
         $('#remove-landmark-error')
           .text(`${e.status}: ${e.statusText}`)
           .removeClass().addClass('text-danger');
-      }
+      };
   });
 })();

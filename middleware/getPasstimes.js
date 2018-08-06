@@ -7,20 +7,27 @@ const getPasstimes = async (req, res, next) => {
     const url = `http://api.open-notify.org/iss-pass.json?lat=${lat}&lon=${lng}`;
     const response = await axios.get(url);
 
-    const passtimes = response.data.response;
+    const passtimesRaw = response.data.response;
 
-    req.passtimes = passtimes.map(pass => {
+    const passtimes = passtimesRaw.map(pass => {
       const time = new Date(pass.risetime * 1000).toUTCString();
       const duration = (pass.duration / 60).toFixed(2);
       return {
         time,
         duration: `for roughly ${duration} minutes`
-      }
+      };
     });
 
+    req.options = {
+      ...req.options,
+      passtimes
+    };
+
     next();
-    
-  } catch (e) { next(e) }
+
+  } catch (e) {
+    next(e);
+  };
 };
 
 module.exports = getPasstimes;
