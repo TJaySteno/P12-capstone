@@ -1,13 +1,11 @@
 ## Project 12
 ### Build a Course Rating API With Express
 
-In this project, I have built a REST API to handle requests for a course rating website. Users can create profiles, look up courses or create a new one, look up reviews and even submit their own. When looking up a specific course (the most complex route), you will get all information on the course itself as well as the information on the teacher ('user' subdocument) and the reviews ('review' subdocuments). Additionally, reviews go one level deeper to get info on the user that submitted them. Inception.
-
-This project ended up being a bit of a struggle for me, but here on the other side of it I'm glad for it. I have learned a lot about MongoDB and Mongoose, and am glad to have the extra practice with Express! One more project to go!
+In this project, ...
 
 *__Skills:__ JavaScript, jQuery, Bootstrap 4, CSS, Node.js, Express, MongoDB, APIs*
 
-*__Personal Development Emphasis:__ Review of Express, MongoDB, using APIs, handling https to http and CORS requests*
+*__Personal Development Emphasis:__ ...*
 
 ---
 
