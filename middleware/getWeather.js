@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-// Convert current weather into readable format
+/* Convert current weather into readable format */
 const formatCurrent = (current, scale) => {
   const description = current.weather[0].description;
   const imgSrc = `http://openweathermap.org/img/w/${current.weather[0].icon}.png`;
@@ -10,7 +10,12 @@ const formatCurrent = (current, scale) => {
   const tempText = `${main.temp}&deg;${scale.temp} with ${main.humidity}% humidity`;
 
   const windText = (() => {
-    const directions = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW','N'];
+    const directions = [
+      'N', 'NNE', 'NE', 'ENE',
+      'E', 'ESE', 'SE', 'SSE',
+      'S', 'SSW', 'SW', 'WSW',
+      'W', 'WNW', 'NW', 'NNW', 'N',
+    ];
     const direction = directions[Math.round((wind.deg / 360) * 16)];
 
     return `Winds blowing at ${wind.speed} ${scale.wind}, ${direction}`;
@@ -21,7 +26,7 @@ const formatCurrent = (current, scale) => {
   return { description, imgSrc, tempText, windText, cloudText };
 };
 
-// Convert millisecond string into readable format
+/* Convert millisecond string into readable format */
 const formatTime = dt => {
   const date = new Date(dt * 1000);
 
@@ -35,9 +40,9 @@ const formatTime = dt => {
   })();
 
   return `${day}, ${time} GMT`;
-}
+};
 
-// Convert forecasted weather into readable format
+/* Convert forecasted weather into readable format */
 const formatForecast = (forecastRaw, scale) => {
   const { list } = forecastRaw;
   list.length = 4;
@@ -56,26 +61,26 @@ const formatForecast = (forecastRaw, scale) => {
   });
 };
 
-// Store values for 'metric' or 'imperial' systems
+/* Store values for 'metric' or 'imperial' systems */
 const determineScaleValues = scale => {
   if (scale && scale === 'metric') {
     return {
       system: 'metric',
       temp: 'C',
-      wind: 'm/s'
+      wind: 'm/s',
     };
   } else {
     return {
       system: 'imperial',
       temp: 'F',
-      wind: 'mph'
+      wind: 'mph',
     };
-  };
+  }
 };
 
-// Request current or forecasted weather
-const weatherRequest = async (path, req) => {
-  return new Promise(async (resolve, reject) => {
+/* Request current or forecasted weather */
+const weatherRequest = async (path, req) =>
+  new Promise(async (resolve, reject) => {
     try {
       const url = `http://api.openweathermap.org/data/2.5/${path}`;
       const { lat, lng } = req.coord ? req.coord : req.body;
@@ -84,7 +89,7 @@ const weatherRequest = async (path, req) => {
         lat: Number(lat),
         lon: Number(lng),
         units: req.scale.system,
-        APPID: process.env.WEATHER_KEY
+        APPID: process.env.WEATHER_KEY,
       };
 
       const response = await axios.get(url, { params });
@@ -93,11 +98,10 @@ const weatherRequest = async (path, req) => {
 
     } catch (e) {
       return reject(res);
-    };
+    }
   });
-};
 
-// Request weather and return formatted values
+/* Request weather and return formatted values */
 const getWeather = async (req, res, next) => {
   try {
 
@@ -105,11 +109,9 @@ const getWeather = async (req, res, next) => {
 
     const classTemp = {
       f: 'btn btn-secondary',
-      c: 'btn btn-secondary'
+      c: 'btn btn-secondary',
     };
-    req.scale.system === 'imperial'
-      ? classTemp.f += ' active'
-      : classTemp.c += ' active';
+    req.scale.system === 'imperial' ? classTemp.f += ' active' : classTemp.c += ' active';
 
     const currentRaw  = await weatherRequest('weather', req);
     const forecastRaw = await weatherRequest('forecast', req);
@@ -121,14 +123,14 @@ const getWeather = async (req, res, next) => {
       ...req.options,
       classTemp,
       current,
-      forecast
+      forecast,
     };
 
     next();
 
   } catch (e) {
     next(e);
-  };
+  }
 };
 
 module.exports = getWeather;

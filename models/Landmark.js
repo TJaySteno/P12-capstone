@@ -1,21 +1,21 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-// Define landmark schema
+/* Define landmark schema */
 const landmarkSchema = new Schema({
   coord: {
     lng: {
       type: mongoose.Schema.Types.Number,
-      required: true
+      required: true,
     },
     lat: {
       type: mongoose.Schema.Types.Number,
-      required: true
-    }
+      required: true,
+    },
   },
   name: {
     type: mongoose.Schema.Types.String,
-    required: true
+    required: true,
   }
 });
 

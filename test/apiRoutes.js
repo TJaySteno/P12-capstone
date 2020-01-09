@@ -33,7 +33,7 @@ describe('EXTERNAL API ROUTES', () => {
         .send({
           lat: 51,
           lng: 1,
-          scale: 'metric'
+          scale: 'metric',
         })
         .end((err, res) => {
           res.should.have.status(200);
@@ -56,7 +56,7 @@ describe('EXTERNAL API ROUTES', () => {
         .type('form')
         .send({
           lng: 1,
-          scale: 'metric'
+          scale: 'metric',
         })
         .end((err, res) => {
           res.should.have.status(500);
@@ -73,7 +73,7 @@ describe('EXTERNAL API ROUTES', () => {
         .send({
           lat: 51,
           lng: 1,
-          scale: 'metric'
+          scale: 'metric',
         })
         .end((err, res) => {
           res.should.have.status(200);

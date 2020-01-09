@@ -17,7 +17,7 @@ describe('DATABASE', () => {
   let _id = '';
 
   before(() =>
-    Landmark.remove({}, err => { if (err) console.log(err); }) );
+    Landmark.remove({}, err => { if (err) console.log(err); }));
 
   describe('POST /api/landmarks', () => {
 
@@ -28,7 +28,7 @@ describe('DATABASE', () => {
         .send({
           lat: 51.5007,
           lng: 0.1246,
-          name: 'Big Ben'
+          name: 'Big Ben',
         })
         .end((err, res) => {
           res.should.have.status(500);
@@ -45,7 +45,7 @@ describe('DATABASE', () => {
         .type('form')
         .send({
           lng: 0.1246,
-          name: 'Big Ben'
+          name: 'Big Ben',
         })
         .end((err, res) => {
           res.should.have.status(500);
@@ -63,14 +63,14 @@ describe('DATABASE', () => {
         .type('form')
         .send({
           lat: 51.5007,
-          lng: 0.1246
+          lng: 0.1246,
         })
         .end((err, res) => {
           res.should.have.status(500);
           res.body.should.be.a('object');
           res.body.should.have.property('errors');
           res.body.errors.should.have.property('name');
-          res.body.errors['name'].should.have.property('kind').eql('required');
+          res.body.errors.name.should.have.property('kind').eql('required');
 
         });
     });

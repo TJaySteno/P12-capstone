@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-// Get the next passtimes at given coordinates
+/* Get the next passtimes at given coordinates */
 const getPasstimes = async (req, res, next) => {
   try {
     const { lat, lng } = req.coord ? req.coord : req.body;
@@ -14,20 +14,20 @@ const getPasstimes = async (req, res, next) => {
       const duration = (pass.duration / 60).toFixed(2);
       return {
         time,
-        duration: `for roughly ${duration} minutes`
+        duration: `for roughly ${duration} minutes`,
       };
     });
 
     req.options = {
       ...req.options,
-      passtimes
+      passtimes,
     };
 
     next();
 
   } catch (e) {
     next(e);
-  };
+  }
 };
 
 module.exports = getPasstimes;

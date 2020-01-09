@@ -23,5 +23,8 @@
     "dotenv": "^8.2.0",
     "mocha": "^7.0.0",
     "nodemon": "^2.0.2"
+  },
+  "jshintConfig": {
+    "esversion": "9"
   }
 }
