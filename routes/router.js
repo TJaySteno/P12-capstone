@@ -42,7 +42,7 @@ router.get('/maps',
       req.options = {
         ...req.options,
         googleMapURL,
-        active
+        active,
       };
 
       res.render('maps', req.options);
@@ -57,7 +57,7 @@ router.get('/maps',
 router.get('/about',
   checkSecurity,
   (req, res) => {
-    // Format project data for rendering
+    /* Format project data for rendering */
     const projects = projectData.map(project => {
       const { id } = project;
 
@@ -77,13 +77,11 @@ router.get('/about',
   }
 );
 
-
-
 /**********************************************************
   EXTERNAL API ROUTING
 **********************************************************/
 
-// Make a geocode request to Google Maps
+/* Make a geocode request to Google Maps */
 router.post('/api/geocode', async (req, res, next) => {
   try {
     const { query } = req.body;
@@ -97,10 +95,10 @@ router.post('/api/geocode', async (req, res, next) => {
   } catch (e) {
     res.status(e.status || 500);
     res.json(err);
-  };
+  }
 });
 
-// Request current ISS location
+/* Request current ISS location */
 router.get('/api/iss', async (req, res, next) => {
   try {
     const url = 'http://api.open-notify.org/iss-now.json';
@@ -113,10 +111,10 @@ router.get('/api/iss', async (req, res, next) => {
   } catch (e) {
     res.status(e.status || 500);
     res.json(err);
-  };
+  }
 });
 
-// Get weather and passtimes for coordinates given in req.body
+/* Get weather and passtimes for coordinates given in req.body */
 router.post('/api/reposition',
   getPasstimes,
   getWeather,
@@ -126,19 +124,17 @@ router.post('/api/reposition',
   }
 );
 
-// Get weather for coordinates in req.body
+/* Get weather for coordinates in req.body */
 router.post('/api/weather',
   getWeather,
   (req, res) => res.json(req.options)
 );
 
-
-
 /**********************************************************
   DATABASE ROUTING
 **********************************************************/
 
-// Save a new Landmark to the database
+/* Save a new Landmark to the database */
 router.post('/api/landmarks', async (req, res) => {
   const { name, lat, lng } = req.body;
   const coord = { lat, lng };
@@ -150,17 +146,19 @@ router.post('/api/landmarks', async (req, res) => {
       res.status(err.status || 500);
       return res.json(err);
     }
+
     res.json(lm);
   });
 });
 
-// Delete a Landmark from the database
+/* Delete a Landmark from the database */
 router.delete('/api/landmarks', async (req, res) => {
   Landmark.findByIdAndDelete(req.body._id, err => {
     if (err) {
       res.status(err.status || 500);
       return res.json(err);
-    };
+    }
+
     res.sendStatus(204);
   });
 });

@@ -16,7 +16,7 @@ const getLandmarks = async (req, res, next) => {
     });
   } catch (e) {
     next(e);
-  };
+  }
 };
 
 module.exports = getLandmarks;

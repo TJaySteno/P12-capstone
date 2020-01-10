@@ -16,7 +16,7 @@ const landmarkSchema = new Schema({
   name: {
     type: mongoose.Schema.Types.String,
     required: true,
-  }
+  },
 });
 
 const Landmark = mongoose.model('Landmark', landmarkSchema);

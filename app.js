@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
+const x = true;
+
 const router = require('./routes/router');
 
 require('dotenv').config();

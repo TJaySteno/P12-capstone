@@ -160,7 +160,7 @@ function initMap() {
 
     } catch (e) {
       console.error(e);
-    };
+    }
   });
 
   /********************* ALL MODAL WINDOWS *********************/

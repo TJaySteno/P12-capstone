@@ -17,7 +17,7 @@ describe('EXTERNAL API ROUTES', () => {
           res.should.have.status(200);
           res.body.should.be.an('object');
           res.body.should.have.all.keys('lat', 'lng');
-      });
+        });
     });
   });
 
@@ -42,7 +42,7 @@ describe('EXTERNAL API ROUTES', () => {
           res.body.weather.classTemp.should.be.an('object');
           res.body.weather.current.should.be.an('object');
           res.body.weather.forecast.should.be.an('array');
-      });
+        });
     });
 
     it('it should require coordinates', () => {
