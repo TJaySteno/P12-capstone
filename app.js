@@ -29,6 +29,7 @@ app.use((req, res, next) => {
     process.env.MONGODB_URI :
     process.env.MONGODB_URI_TEST;
 
+  mongoose.set('useUnifiedTopology', true);
   mongoose.connect(mongoURI, { useNewUrlParser: true });
   const db = mongoose.connection;
   db.on('error', console.error.bind(console, 'connection error:'));
@@ -39,8 +40,6 @@ app.use((req, res, next) => {
     });
   }
 });
-
-const hello = 'unused';
 
 app.use(router);
 
