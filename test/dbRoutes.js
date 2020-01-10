@@ -1,16 +1,14 @@
 process.env.NODE_ENV = 'test';
 
-const express = require('express');
-const mongoose = require('mongoose');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
 const app = require('../app');
 const Landmark = require('../models/Landmark');
 
-const should = chai.should();
-
 chai.use(chaiHttp);
+
+console.log('db routes');
 
 describe('DATABASE', () => {
 
@@ -88,7 +86,5 @@ describe('DATABASE', () => {
 
         });
     });
-
   });
-
 });
