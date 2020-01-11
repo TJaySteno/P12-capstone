@@ -7,18 +7,18 @@ const formatCurrent = (current, scale) => {
 
   const { main, wind, clouds } = current;
 
-  const tempText = `${main.temp}&deg;${scale.temp} with ${main.humidity}% humidity`;
+  const tempText = `${Math.round(main.temp)}&deg;${scale.temp} with ${main.humidity}% humidity`;
 
   const windText = (() => {
-    const directions = [
+    const cardinalDir = [
       'N', 'NNE', 'NE', 'ENE',
       'E', 'ESE', 'SE', 'SSE',
       'S', 'SSW', 'SW', 'WSW',
       'W', 'WNW', 'NW', 'NNW', 'N',
     ];
-    const direction = directions[Math.round((wind.deg / 360) * 16)];
+    const direction = cardinalDir[Math.round((wind.deg / 360) * 16)];
 
-    return `Winds blowing at ${wind.speed} ${scale.wind}, ${direction}`;
+    return `Winds blowing at ${Math.round(wind.speed)} ${scale.wind}, ${direction}`;
   })();
 
   const cloudText = `Cloud cover is ${clouds.all}%`;
@@ -50,7 +50,7 @@ const formatForecast = (forecastRaw, scale) => {
   return list.map(item => {
     const { dt, main, weather, clouds, wind, rain, sys } = item;
     const time = formatTime(item.dt);
-    const temp = `${item.main.temp}&deg;${scale.temp}`;
+    const temp = `${Math.round(item.main.temp)}&deg;${scale.temp}`;
     const humidity = `${item.main.humidity}% hum`;
     const description = weather[0].description;
 
