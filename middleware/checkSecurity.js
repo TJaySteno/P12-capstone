@@ -1,4 +1,4 @@
-// Check if request is being made over HTTP or HTTPS
+/* Check if request is being made over HTTP or HTTPS */
 const checkSecurity = async (req, res, next) => {
   try {
     let https;
@@ -10,7 +10,7 @@ const checkSecurity = async (req, res, next) => {
     next();
   } catch (e) {
     next(e);
-  };
+  }
 };
 
 module.exports = checkSecurity;

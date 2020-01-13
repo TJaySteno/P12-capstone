@@ -1,31 +1,31 @@
 'use strict';
 
 /********************* MAP *********************/
-// Initialize map and markers in the global scope
+/* Initialize map and markers in the global scope */
 let map;
 let marker;
 
-function initMap () {
+function initMap() {
   const mapDiv = document.querySelector('#map');
   const coord = mapDiv.attributes.value.value.split(' ');
   const center = { lat: Number(coord[0]), lng: Number(coord[1]) };
 
   map = new google.maps.Map(mapDiv, { center, zoom: 5 });
   marker = new google.maps.Marker({ map, position: center });
-};
+}
 
-// Instantly invoke the rest to avoid global scope
+/* Instantly invoke the rest to avoid global scope */
 (() => {
 
   /**********************************************************
-    /MAPS
+    MAPS
   **********************************************************/
 
   /********************* GENERAL FUNCTIONS *********************/
 
-  // Simplify AJAX requests
-  const request = (type, url, data) => {
-    return new Promise(async (resolve, reject) => {
+  /* Simplify AJAX requests */
+  const request = (type, url, data) =>
+    new Promise(async (resolve, reject) => {
       try {
         const options = { type, url, dataType: 'json' };
         if (data) options.data = data;
@@ -34,13 +34,12 @@ function initMap () {
         resolve(response);
       } catch (e) {
         reject(e);
-      };
+      }
     });
-  };
 
-  // Shift map to, and write weather & passtimes for given coordinates
-  const reposition = (coord, zoom) => {
-    return new Promise(async (resolve, reject) => {
+  /* Shift map to, and write weather & passtimes for given coordinates */
+  const reposition = (coord, zoom) =>
+    new Promise(async (resolve, reject) => {
       try {
         const { lat, lng } = coord;
         const isMetric = $('.btn-group-toggle .active').text().includes('C');
@@ -57,11 +56,10 @@ function initMap () {
       } catch (e) {
         console.error(e);
         reject(e);
-      };
+      }
     });
-  };
 
-  // Write new values for current and forecasted weather
+  /* Write new values for current and forecasted weather */
   const writeWeather = (current, forecast) => {
 
     const titleHTML = current.description +
@@ -92,7 +90,7 @@ function initMap () {
 
   };
 
-  // Write new values for pass times modal
+  /* Write new values for pass times modal */
   const writePasstimes = passtimes => {
     let passtimeHTML = '';
 
@@ -104,7 +102,7 @@ function initMap () {
 
   /********************* WEATHER DIV *********************/
 
-  // Accept address form submissions and find the query in Google Maps
+  /* Accept address form submissions and find the query in Google Maps */
   $('#address-form').submit(async e => {
     try {
       e.preventDefault();
@@ -122,10 +120,10 @@ function initMap () {
 
     } catch (e) {
       console.error(e);
-    };
+    }
   });
 
-  // Request a new ISS location
+  /* Request a new ISS location */
   $('#iss-now').click(async e => {
     try {
       const coord = await request('GET', '/api/iss');
@@ -135,7 +133,7 @@ function initMap () {
     };
   });
 
-  // Interpret a landmark button and reposition the app accordingly
+  /* Interpret a landmark button and reposition the app accordingly */
   const moveToLandmark = e => {
     const split = $(e.target).find('span').text().split(' ');
     const coord = { lat: Number(split[0]), lng: Number(split[1]) };
@@ -143,12 +141,12 @@ function initMap () {
     reposition(coord, 13);
   };
 
-  // Apply click handlers to all landmark buttons in the dropdown menu
+  /* Apply click handlers to all landmark buttons in the dropdown menu */
   $('#landmark-buttons').children().each(function () {
     $(this).click(moveToLandmark);
   });
 
-  // Handle user preferences between metric and imperial measurements
+  /* Handle user preferences between metric and imperial measurements */
   $('.btn-group-toggle').on('change', async e => {
     try {
       const scale = e.target.name;
@@ -162,20 +160,20 @@ function initMap () {
 
     } catch (e) {
       console.error(e);
-    };
+    }
   });
 
   /********************* ALL MODAL WINDOWS *********************/
 
   $('.modal').each(function () {
 
-    // On modal closure, reset for next use
+    /* On modal closure, reset for next use */
     $(this).on('hidden.bs.modal', function () {
 
       $(this).find('.hide').each(function () {
         if (!$(this).hasClass('d-none'))
           $(this).addClass('d-none');
-        });
+      });
 
       $(this).find('.show').each(function () {
         $(this).removeClass('d-none');
@@ -191,12 +189,12 @@ function initMap () {
 
   /********************* ADD LANDMARKS *********************/
 
-  // Upon opening "Add Landmark" modal, focus input
+  /* Upon opening "Add Landmark" modal, focus input */
   $('#add-landmark').on('shown.bs.modal', function () {
     $(this).find('input').trigger('focus');
   });
 
-  // Geocode a user query and post it to #add-landmark-results
+  /* Geocode a user query and post it to #add-landmark-results */
   $('#add-landmark-search form').submit(async e => {
     e.preventDefault();
 
@@ -220,7 +218,7 @@ function initMap () {
     $('#add-landmark-results').removeClass('d-none');
   });
 
-  // Upon selecting geocode results, move user to formatting div
+  /* Upon selecting geocode results, move user to formatting div */
   $('#add-landmark-results ul').click(e => {
     const $searchDiv = $('#add-landmark-search');
     const $formatDiv = $('#add-landmark-format');
@@ -241,7 +239,7 @@ function initMap () {
     $formatDiv.find('input').focus();
   });
 
-  // Post a user-formatted name to be saved in the DB
+  /* Post a user-formatted name to be saved in the DB */
   $('#add-landmark-format form').submit(async e => {
     try {
       e.preventDefault();
@@ -262,7 +260,7 @@ function initMap () {
 
       reposition({ lat: Number(lat), lng: Number(lng) }, 13);
 
-      // Once this modal is hidden, reset it and add landmark to page
+      /* Once this modal is hidden, reset it and add landmark to page */
       $('#add-landmark').modal('hide')
         .on('hidden.bs.modal', () => {
 
@@ -287,12 +285,12 @@ function initMap () {
       $('#add-landmark-error')
         .text(e.message)
         .removeClass().addClass('text-danger');
-    };
+    }
   });
 
   /********************* REMOVE LANDMARKS *********************/
 
-  // Upon selecting a landmark to remove, reveal confirmation div
+  /* Upon selecting a landmark to remove, reveal confirmation div */
   $('#remove-landmark-list ul').click(function (e) {
     const split = $(e.target).text().split('$%');
     const $confirmDiv = $('#remove-landmark-confirm');
@@ -301,7 +299,7 @@ function initMap () {
     $confirmDiv.removeClass('d-none');
   });
 
-  // Upon landmark removal confirmation, send a DELETE request
+  /* Upon landmark removal confirmation, send a DELETE request */
   $('#remove-landmark-button').click(async e => {
     try {
       const _id = $(e.target).val();
@@ -317,7 +315,7 @@ function initMap () {
 
       $('#remove-landmark').modal('hide');
 
-      // Once this modal is hidden, reset it and remove landmark from page
+      /* Once this modal is hidden, reset it and remove landmark from page */
       $('#remove-landmark').modal('hide')
         .on('hidden.bs.modal', () => {
 
@@ -333,11 +331,10 @@ function initMap () {
             if (_idIsPresent) $(this).remove();
           });
         });
-
-      } catch (e) {
-        $('#remove-landmark-error')
-          .text(`${e.status}: ${e.statusText}`)
-          .removeClass().addClass('text-danger');
-      };
+    } catch (e) {
+      $('#remove-landmark-error')
+        .text(`${e.status}: ${e.statusText}`)
+        .removeClass().addClass('text-danger');
+    }
   });
 })();
